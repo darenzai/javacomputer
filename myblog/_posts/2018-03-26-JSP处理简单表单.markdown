@@ -1,7 +1,7 @@
 ---
 layout: post
 title: JSP获取表单内容
-date: 2017-03-26 
+date: 2018-03-26 
 tags: JAVA WEB   
 ---
 ### JSP提交表单简单方式不含复选框部分

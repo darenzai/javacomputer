@@ -1,101 +1,99 @@
 ---
 
 layout: post
-
-title: MySQL³£ÓÃÃüÁî
+title: MySQLå¸¸ç”¨å‘½ä»¤
 date: 2016-03-28 
-
-tags: Êı¾İ¿â    
+tags: æ•°æ®åº“ 
 
 ---
 
-1.¸ü¸ÄrootÃÜÂë
+1.æ›´æ”¹rootå¯†ç 
 
 mysqladmin -uroot password 'yourpassword'
 1
-2.Ô¶³ÌµÇÂ½mysql·şÎñÆ÷
+2.è¿œç¨‹ç™»é™†mysqlæœåŠ¡å™¨
 
 mysql -uroot -p -h192.168.137.10 -P3306
 1
-3.²éÑ¯Êı¾İ¿â
+3.æŸ¥è¯¢æ•°æ®åº“
 
 show databases;
 1
-4.½øÈëÄ³¸öÊı¾İ¿â
+4.è¿›å…¥æŸä¸ªæ•°æ®åº“
 
 use databasename;
 1
-5.ÁĞ³öÊı¾İ¿âÖĞµÄ±í
+5.åˆ—å‡ºæ•°æ®åº“ä¸­çš„è¡¨
 
 show tables;
 1
-6.²é¿´Ä³¸ö±íÈ«²¿×Ö¶Î
+6.æŸ¥çœ‹æŸä¸ªè¡¨å…¨éƒ¨å­—æ®µ
 
 desc slow_log;
-show create table slow_log\G; £¨²»½ö¿ÉÒÔÏÔÊ¾±íĞÅÏ¢£¬»¹¿ÉÒÔÏÔÊ¾½¨±íÓï¾ä£©
+show create table slow_log\G; ï¼ˆä¸ä»…å¯ä»¥æ˜¾ç¤ºè¡¨ä¿¡æ¯ï¼Œè¿˜å¯ä»¥æ˜¾ç¤ºå»ºè¡¨è¯­å¥ï¼‰
 1
 2
-7.²é¿´µ±Ç°ÓÃ»§
+7.æŸ¥çœ‹å½“å‰ç”¨æˆ·
 
 select user();
 1
-8.²é¿´µ±Ç°ËùÔÚÊı¾İ¿â
+8.æŸ¥çœ‹å½“å‰æ‰€åœ¨æ•°æ®åº“
 
 select database();
 1
-9.´´½¨ĞÂÊı¾İ¿â£¨¿ÉÒÔÖ¸¶¨×Ö·û¼¯£©
+9.åˆ›å»ºæ–°æ•°æ®åº“ï¼ˆå¯ä»¥æŒ‡å®šå­—ç¬¦é›†ï¼‰
 
 create database db1 charset utf8;
 1
-10.´´½¨ĞÂ±í
+10.åˆ›å»ºæ–°è¡¨
 
 create table t1 (`id` int(4), `name` char(40));
 1
-11.²é¿´Êı¾İ¿â°æ±¾
+11.æŸ¥çœ‹æ•°æ®åº“ç‰ˆæœ¬
 
 select version();
 1
-12.²é¿´Êı¾İ¿â×´Ì¬
+12.æŸ¥çœ‹æ•°æ®åº“çŠ¶æ€
 
-show status;         µ±Ç°»á»°×´Ì¬
+show status;         å½“å‰ä¼šè¯çŠ¶æ€
 
-show global status;  È«¾ÖÊı¾İ¿â×´Ì¬
+show global status;  å…¨å±€æ•°æ®åº“çŠ¶æ€
 
-show slave status\G;   ²é¿´Ö÷´ÓÊı¾İ¿â×´Ì¬ĞÅÏ¢
+show slave status\G;   æŸ¥çœ‹ä¸»ä»æ•°æ®åº“çŠ¶æ€ä¿¡æ¯
 1
 2
 3
 4
 5
-13.²éÑ¯Êı¾İ¿â²ÎÊı
+13.æŸ¥è¯¢æ•°æ®åº“å‚æ•°
 
 show variables;
 1
-14.ĞŞ¸ÄÊı¾İ¿â²ÎÊı
+14.ä¿®æ”¹æ•°æ®åº“å‚æ•°
 
 show variables like 'max_connect%';
 
-set global max_connect_errors = 1000;£¨ÖØÆôÊı¾İ¿â»áÊ§Ğ§£¬ÒªÔÚÅäÖÃÎÄ¼şÖĞĞŞ¸Ä£©
+set global max_connect_errors = 1000;ï¼ˆé‡å¯æ•°æ®åº“ä¼šå¤±æ•ˆï¼Œè¦åœ¨é…ç½®æ–‡ä»¶ä¸­ä¿®æ”¹ï¼‰
 1
 2
 3
-15.²é¿´µ±Ç°Êı¾İ¿â¶ÓÁĞ
+15.æŸ¥çœ‹å½“å‰æ•°æ®åº“é˜Ÿåˆ—
 
 show processlist;
 1
-16.´´½¨ÆÕÍ¨ÓÃ»§²¢ÊÚÈ¨¸øÄ³¸öÊı¾İ¿â
+16.åˆ›å»ºæ™®é€šç”¨æˆ·å¹¶æˆæƒç»™æŸä¸ªæ•°æ®åº“
 
 grant all on databasename.* to 'user1'@'localhost' identified by '123456';
 1
-17.²éÑ¯±íÊı¾İ
+17.æŸ¥è¯¢è¡¨æ•°æ®
 
-select * from mysql.db;           //²éÑ¯¸Ã±íÖĞµÄËùÓĞ×Ö¶Î
+select * from mysql.db;           //æŸ¥è¯¢è¯¥è¡¨ä¸­çš„æ‰€æœ‰å­—æ®µ
 
-select count(*) from mysql.user;  //count(*)±íÊ¾±íÖĞÓĞ¶àÉÙĞĞ
+select count(*) from mysql.user;  //count(*)è¡¨ç¤ºè¡¨ä¸­æœ‰å¤šå°‘è¡Œ
 
-select db,user  from mysql.db;    //²éÑ¯±íÖĞµÄ¶à¸ö×Ö¶Î
+select db,user  from mysql.db;    //æŸ¥è¯¢è¡¨ä¸­çš„å¤šä¸ªå­—æ®µ
 
-select * from mysql.db where host like '10.0.%';ÔÚ²éÑ¯Óï¾äÖĞ¿ÉÒÔÊ¹ÓÃÍòÄÜÆ¥Åä ¡°%¡±
+select * from mysql.db where host like '10.0.%';åœ¨æŸ¥è¯¢è¯­å¥ä¸­å¯ä»¥ä½¿ç”¨ä¸‡èƒ½åŒ¹é… â€œ%â€
 1
 2
 3
@@ -103,54 +101,54 @@ select * from mysql.db where host like '10.0.%';ÔÚ²éÑ¯Óï¾äÖĞ¿ÉÒÔÊ¹ÓÃÍòÄÜÆ¥Åä ¡°%
 5
 6
 7
-18.²åÈëÒ»ĞĞÊı¾İ
+18.æ’å…¥ä¸€è¡Œæ•°æ®
 
 insert into db1.t1 values (1, 'abc');
 1
-19.¸ü¸Ä±íµÄÄ³Ò»ĞĞÊı¾İ
+19.æ›´æ”¹è¡¨çš„æŸä¸€è¡Œæ•°æ®
 
 update db1.t1 set name='aaa' where id=1;
 1
-20.Çå¿Õ±íÊı¾İ
+20.æ¸…ç©ºè¡¨æ•°æ®
 
 truncate table db1.t1;
 1
-21.É¾³ı±í
+21.åˆ é™¤è¡¨
 
 drop table db1.t1;
 1
-22.Çå¿ÕÊı¾İ¿âÖĞµÄËùÓĞ±í£¨Êı¾İ¿âÃûÊÇeab12£©
+22.æ¸…ç©ºæ•°æ®åº“ä¸­çš„æ‰€æœ‰è¡¨ï¼ˆæ•°æ®åº“åæ˜¯eab12ï¼‰
 
 mysql -N -s information_schema -e "SELECT CONCAT('TRUNCATE TABLE ',TABLE_NAME,';') FROM TABLES WHERE TABLE_SCHEMA='eab12'" | mysql -f eab12
 1
-23.É¾³ıÊı¾İ¿â
+23.åˆ é™¤æ•°æ®åº“
 
 drop database db1;
 1
-24.Êı¾İ¿â±¸·İ
+24.æ•°æ®åº“å¤‡ä»½
 
 mysqldump  -uroot -p'yourpassword' mysql >/tmp/mysql.sql
 1
-25.Êı¾İ¿â»Ö¸´
+25.æ•°æ®åº“æ¢å¤
 
 mysql -uroot -p'yourpassword' mysql </tmp/mysql.sql
 1
-26.ĞÂ½¨ÆÕÍ¨ÓÃ»§
+26.æ–°å»ºæ™®é€šç”¨æˆ·
 
 CREATE USER name IDENTIFIED BY 'ssapdrow';
 1
-27.¸ü¸ÄÆÕÍ¨ÓÃ»§ÃÜÂë
+27.æ›´æ”¹æ™®é€šç”¨æˆ·å¯†ç 
 
 SET PASSWORD FOR name=PASSWORD('fdddfd');
 1
-28.²é¿´nameÓÃ»§È¨ÏŞ
+28.æŸ¥çœ‹nameç”¨æˆ·æƒé™
 
 SHOW GRANTS FOR name;
 1
-29.½Å±¾ÖĞÖ´ĞĞmysqlÃüÁî
+29.è„šæœ¬ä¸­æ‰§è¡Œmysqlå‘½ä»¤
 
 mysql -uuser -ppasswd -e"show databases"
 
 echo "show databases"|mysql -uuser -ppassword
 
-<br>ÒıÓÃ https://blog.csdn.net/provence_20/article/details/78786509
+<br>å¼•ç”¨ https://blog.csdn.net/provence_20/article/details/78786509

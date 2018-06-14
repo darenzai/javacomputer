@@ -1,0 +1,15 @@
+<h3>JSP提交表单简单方式不含复选框部分</h3>
+
+ <form action="./servlet/Check" method="post">
+      name:<input type="text" name="username" /><br/>
+      pawd:<input type="password" name="pwd" /><br/>
+      <input type="hidden" name="hidden" value="隐藏" />
+      <input type="submit" value="submit"/>
+      </form>
+接着在就是获取以上的值
+PrintWriter out = response.getWriter();
+  String u = request.getParameter("username");
+  String p = request.getParameter("pwd");
+  String hd=request.getParameter("hidden");
+如果要输入
+              out.print(u);//输出用户名

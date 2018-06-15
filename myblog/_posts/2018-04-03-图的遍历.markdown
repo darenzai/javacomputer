@@ -1,0 +1,414 @@
+### 概念　
+　　简单图(simple graph):就是由一些顶点(V,vertice) 和 连接这些顶点的一些边(E,edge)所组成的结构,并且每对顶点之间只能存在一条边.所以通常会用G = (V,E)来表示一个简单图.简单图也被称为无向图(undirected graph).
+
+　　说到无向图就一定有有向图(directed graph),有向图同样也用G = (V,E)来表示,都明白两种图的区别是什么,就不多说了.不过在这里说一些表示边时候的区别:
+
+　　简单图的边使用{Vi,Vj}的方式表示,表示连接顶点i与顶点j的边.因为是简单图,所以有:
+
+　　　{Vi,Vj} = {Vj,Vi,}    
+　　有向图的边使用(Vi,Vj)的方式表示.意思是当前边的方向是从顶点i到顶点j,所以很明显有:
+
+　　     (Vi,Vj) ≠ (Vj,Vi)   
+ 
+
+### 2.图的表示
+　　有很多方法可以表示一个图,不过思想上大致都一样.比如下面一个图(本文之后都会用这个图来作为例子):
+
+
+
+图1
+
+　　自己画的,或许丑了点:)
+
+　　先看使用邻接表(adjacency list)来表示该图:
+
+V0	V1   V2　
+V1	V0   V3　
+V2	V0   V3   V4
+V3	V1   V2   V5   V6
+V4	V2   V7
+V5	V3   V6
+V6	V3   V5
+V7	V4
+　　仔细观察就会发现，邻接表是在首列按顺序（正序倒序都可）列出所有顶点，然后第二行列出与顶点相邻的所有顶点，例如第一行，图中与V0相邻的顶点有V1与V2.所以第二列的内容便是 V1 与 V2.
+
+ 
+
+　　另一种表示方法是使用邻接矩阵（adjacency matrix），思想与邻接表大致相同，不同的是邻接表是将与某一顶点相邻的顶点们列出，而邻接矩阵是将他们标注出。顾名思义就是使用矩阵表示，如在本例中，一共有8个顶点，所以此时邻接矩阵的大小就为8*8。如下：
+
+ 	V0	V1	V2	V3	V4	V5	V6	V7
+V0	oo	1	1	oo	oo	oo	oo	oo
+V1	oo	oo	oo	1	oo	oo	oo	oo
+V2	oo	oo	oo	1	1	oo	oo	oo
+V3	oo	1	1	oo	oo	1	1	oo
+V4	oo	oo	1	oo	oo	oo	oo	1
+V5	oo	oo	oo	1	oo	oo	1	oo
+V6	oo	oo	oo	1	oo	1	oo	oo
+V7	oo	oo	oo	oo	1	oo	oo	oo
+　　观察可以发现，如果顶点i与顶点j之间存在边，就将矩阵的aij项设为1，其他情况就设为无穷大(oo)。公式就是：
+
+　　　　　　　　　　　　　　　　　　　　　　｛   1    边(Vi ,Vj)存在 
+
+　　　　　　　　　　　　　　　　　　　　aij = {
+
+　　　　　　　　　　　　　　　　　　　　　　｛   无穷大    其他情况
+
+　　如果对于有向图,此公式就得改为:
+
+　　　　　　　　　　　　　　　　　　　　　　｛   1    边{Vi ,Vj}存在 
+
+　　　　　　　　　　　　　　　　　　　　aij = {
+
+　　　　　　　　　　　　　　　　　　　　　　｛   无穷大    其他情况
+
+　　
+
+　　对于使用哪种表示法，这要取决与你所要处理的问题，如果你仅仅只是处理与某一顶点邻接的顶点，例如遍历，很明显使用表比使用矩阵所要步数要少很多。当你需要对图进行插入或者删除顶点的操作，就应该使用邻接矩阵，你只需要将矩阵上的数从0变为1，或者从1变为0即可。而使用邻接表，你还得要对表进行维护。
+
+　　本例就选用邻接矩阵来表示图1,用二维数组就能直接实现,无穷大被换成了名为oo的变量.如下:
+
+ 1         int oo = Integer.MAX_VALUE;
+ 2         int[][] racs1 = new int[][]{
+ 3                 {oo, 1, 1,oo,oo,oo,oo,oo},
+ 4                 { 1,oo,oo, 1,oo,oo,oo,oo},
+ 5                 { 1,oo,oo, 1, 1,oo,oo,oo},
+ 6                 {oo, 1, 1,oo,oo, 1, 1,oo},
+ 7                 {oo,oo, 1,oo,oo,oo,oo, 1},
+ 8                 {oo,oo,oo, 1,oo,oo, 1,oo},
+ 9                 {oo,oo,oo, 1,oo, 1,oo,oo},
+10                 {oo,oo,oo,oo, 1,oo,oo,oo},
+11         };
+
+  　　
+
+　　除此之外,这里还设定义了一个数组,用于为每个顶点添加一些信息.也就是各个顶点的名字.如果对与具体的问题,例如每个顶点代表地图上的一个城市,可使用像"北京","上海"城市名.当然可以很据特定情况将顶点的相关内容封装一下.
+
+1         String[] verticeInfos1 = new String[] {
+2                 "V0","V1","V2","V3","V4","V5","V6","V7"
+3         };
+ 
+
+　　另:有一种图中有孤立顶点的情况，假设上面的图中有还有一个顶点V8，但它不与任何其他顶点相邻，则该怎么用表或者矩阵来表示那？就当留给大家的一个小问题。
+
+### 3.图的遍历
+　　3.1 先写一个名为Graph的类.用这个类来封装图的相关字段和遍历方法.先看类的字段与构造方法:
+
+
+ 1 /**
+ 2  * 使用邻接矩阵实现图<p>
+ 3  * 深度优先遍历与广度优先遍历<p>
+ 4  * 求最短路径:<p>
+ 5  *      1. Dijkstra 算法 <p>
+ 6  *      2. Ford 算法 <p>
+ 7  *      3. 通用型的纠正标记算法<p>
+ 8  * Created by Henvealf on 16-5-22.
+ 9  */
+10 public class Graph<T> {
+11     private int[][] racs;       //邻接矩阵
+12     private T[] verticeInfo;   //各个点所携带的信息.
+13 
+14     private int verticeNum;             //节点的数目,
+15     private int[] visitedCount;         //记录访问
+16     private int[] currDist;             //最短路径算法中用来记录每个节点的当前路径长度.
+17 
+18     public Graph(int[][] racs, T[] verticeInfo){
+19         if(racs.length != racs[0].length){
+20             throw new IllegalArgumentException("racs is not a adjacency matrix!");
+21         }
+22         if(racs.length != verticeInfo.length ){
+23             throw new IllegalArgumentException ("Argument of 2 verticeInfo's length is error!");
+24         }
+25         this.racs = racs;
+26         this.verticeInfo = verticeInfo;
+27         verticeNum = racs.length;
+28         visitedCount = new int[verticeNum];
+29     }
+30     //.....其他方法
+31 }
+
+ 
+
+　　这里使用了模板来模板化 verticeInfos.
+
+　　还要说明的便是数组 int[] visitedCount; 其作用是为了标记图中的顶点是否被访问过. visitedCount[i] == 0 就说明顶点 i 还未被访问过,所以在进行遍历操作前需要初始化该数组全为0.方法如下:　　
+
+
+1     /**
+2      * 将记录访问的数组初始化为0
+3      */
+4     private void initVisitedCount(){
+5         for(int i = 0; i < visitedCount.length; i ++){　　
+6             visitedCount[i] = 0;
+7         }
+8     }
+
+ 
+
+　　3.2 图的遍历和树的遍历类似,分为深度优先遍历与广度优先遍历.
+
+　　深度优先遍历,简单说就是先沿着一条路线最靠左或最靠右的路线往下走,并把路过的顶点标记为已访问.一直走到无路可走,或者下一站的顶点都被已经访问过了,就顺着刚才走过的路往回看(回溯),当发现回溯中的某一顶点还有其他未被访问过的分支的时候,就选择这个分支继续,重复上面的过程继续遍历.直到回溯到了遍历的出发点,就结束遍历.但如果检查发现图中还存在未被访问过的顶点,就说明图中还存在孤立与本图的分图.此时则任意选择一个未被访问过的顶点继续访问.  最后当图中所有的顶点都被访问过的时候,就说明遍历完成.　
+
+　　所以这里需要一个方法,用来判断图中顶点的访问情况:
+
+
+ 1     /**
+ 2      * 寻找没有被访问过的顶点.
+ 3      * @return > 0 即为还未被访问过的顶点.   -1 说明所有的节点都被访问过了.
+ 4      */
+ 5     private int findNotVisited(){
+ 6         for(int i = 0; i < noteNum; i ++){
+ 7             if(visitedCount[i] == 0){
+ 8                 return i;
+ 9             }
+10         }
+11         return -1;
+12     }
+
+
+　　要寻找与顶点的相邻节点时,我们可以发现简单图的邻接矩阵以对角线对称,所以寻找相邻顶点的时候只需要遍历一半就可以,大大的提高了遍历的效率,不过对于有向图就需要遍历全图.这里只讨论简单图,有向图自行修改区分便可,这里是遍历全图:
+
+
+ 1     /**
+ 2      * 深度遍历的递归
+ 3      * @param begin  从第几个节点开始遍历
+ 4      */
+ 5     public void DFS(int begin, Queue<T> edges){
+ 6         visitedCount[begin] = 1;                         //标记begin为已访问
+ 7         edges.offer(verticeInfo[begin]);                 //加入记录队列
+ 8         for(int a = 0; a < verticeNum; a++){             //遍历相邻的点
+ 9             if((racs[begin][a] != Integer.MAX_VALUE)&& visitedCount[a] == 0){   //相邻的点未被访问过
+10                 DFS(a,edges);
+11             }
+12         }
+13     }
+14 
+15     /**
+16      * 开始深度优先遍历
+17      * @return  返回保持有遍历之后的顺序的队列
+18      */
+19     public Queue<T> depthFirstSearch(){
+20         initVisitedCount();         //将记录访问次序的数组初始化为0
+21         Queue<T> edges = new LinkedList<>();    //用于存储遍历过的点,用于输出
+22         int begin = -1;
+23         while((begin = findNotVisited()) != -1){        //不等于-1说明还有未访问过的点
+24             DFS(begin,edges);
+25         }
+26         return edges;
+27     }
+
+ 
+
+ 　　广度优先遍历.与树的广度优先遍历相似,就是逐层遍历.代码如下:
+
+
+ 1     /**
+ 2      * 广度优先遍历
+ 3      * @return  返回保持有遍历之后的顺序的队列
+ 4      */
+ 5     public Queue<T> breadthFirstSearch(){
+ 6         initVisitedCount();                          //将记录访问次序的数组初始化为0
+ 7         Queue<Integer> tallyQueue = new LinkedList<>();             //初始化队列
+ 8         Queue<T> edges = new LinkedList<>();    //用于存储遍历过的点,用于输出
+ 9         int nowVertice = -1;                         //当前所在的点
+10         while((nowVertice = findNotVisited()) != -1){   //寻找还未被访过问的点
+11             visitedCount[nowVertice] = 1;             //设置访问标记
+12             edges.offer(verticeInfo[nowVertice]);
+13             tallyQueue.offer(nowVertice);               //将当前孤立部分一个顶点加入记录队列中
+14             while(!tallyQueue.isEmpty()){                           //只要队列不为空
+15                 nowVertice = tallyQueue.poll();                     //取出队首的节点
+16                 for(int a = 0; a < verticeNum; a++){     //遍历所有和nowVertice相邻的节点
+17                     if((racs[nowVertice][a] != Integer.MAX_VALUE) && visitedCount[a] == 0) {                      //没有访问过
+18                         visitedCount[a] = 1;                        //记为标记过
+19                         tallyQueue.offer(a);                        //加入队列,上面会继续取出.来遍历
+20                         edges.offer(verticeInfo[a]);                      //记录
+21                     }
+22                 }
+23             }
+24         }
+25         return edges;
+26     }
+
+ 
+
+ 
+
+ 
+
+ 
+
+　　这里需要两个队列,一个队列用于存储遍历过程,另一个用于保存第n层被遍历的顺序,等到遍历第n+1层的时候,取出的顶点就是按照上层的顺序来排列,也就能按照上层的顺序来继续遍历.
+
+ 
+
+下面是Graph完整代码:
+
+ 
+
+
+  1 package com.henvealf.datastructures.graph.arcs;
+  2 
+  3 import java.util.*;
+  4 
+  5 /**
+  6  * 使用邻接矩阵实现图<p>
+  7  * 深度优先遍历与广度优先遍历<p>
+  8  * 求最短路径:<p>
+  9  *      1. Dijkstra 算法 <p>
+ 10  *      2. Ford 算法 <p>
+ 11  *      3. 通用型的纠正标记算法<p>
+ 12  * Created by Henvealf on 16-5-22.
+ 13  */
+ 14 public class Graph<T> {
+ 15     private int[][] racs;       //邻接矩阵
+ 16     private T[] verticeInfo;   //各个点所携带的信息.
+ 17 
+ 18     private int verticeNum;             //节点的数目,
+ 19     private int[] visitedCount;         //记录访问
+ 20     private int[] currDist;             //最短路径算法中用来记录每个节点的当前路径长度.
+ 21 
+ 22     public Graph(int[][] racs, T[] verticeInfo){
+ 23         if(racs.length != racs[0].length){
+ 24             throw new IllegalArgumentException("racs is not a adjacency matrix!");
+ 25         }
+ 26         if(racs.length != verticeInfo.length ){
+ 27             throw new IllegalArgumentException ("Argument of 2 verticeInfo's length is error!");
+ 28         }
+ 29         this.racs = racs;
+ 30         this.verticeInfo = verticeInfo;
+ 31         verticeNum = racs.length;
+ 32         visitedCount = new int[verticeNum];
+ 33     }
+ 34 
+ 35     /**
+ 36      * 深度遍历的递归
+ 37      * @param begin  从第几个节点开始遍历
+ 38      */
+ 39     public void DFS(int begin, Queue<T> edges){
+ 40         visitedCount[begin] = 1;                         //标记begin为已访问
+ 41         edges.offer(verticeInfo[begin]);                 //加入记录队列
+ 42         for(int a = 0; a < verticeNum; a++){             //遍历相邻的点
+ 43             if((racs[begin][a] != Integer.MAX_VALUE)&& visitedCount[a] == 0){   //相邻的点未被访问过
+ 44                 DFS(a,edges);
+ 45             }
+ 46         }
+ 47     }
+ 48 
+ 49     /**
+ 50      * 开始深度优先遍历
+ 51      * @return  返回保持有遍历之后的顺序的队列
+ 52      */
+ 53     public Queue<T> depthFirstSearch(){
+ 54         initVisitedCount();         //将记录访问次序的数组初始化为0
+ 55         Queue<T> edges = new LinkedList<>();    //用于存储遍历过的点,用于输出
+ 56         int begin = -1;
+ 57         while((begin = findNotVisited()) != -1){        //不等于-1说明还有未访问过的点
+ 58             DFS(begin,edges);
+ 59         }
+ 60         return edges;
+ 61     }
+ 62 
+ 63     /**
+ 64      * 广度优先遍历
+ 65      * @return  返回保持有遍历之后的顺序的队列
+ 66      */
+ 67     public Queue<T> breadthFirstSearch(){
+ 68         initVisitedCount();                          //将记录访问次序的数组初始化为0
+ 69         Queue<Integer> tallyQueue = new LinkedList<>();             //初始化队列
+ 70         Queue<T> edges = new LinkedList<>();    //用于存储遍历过的点,用于输出
+ 71         int nowVertice = -1;                         //当前所在的点
+ 72         while((nowVertice = findNotVisited()) != -1){   //寻找还未被访过问的点
+ 73             visitedCount[nowVertice] = 1;             //设置访问标记
+ 74             edges.offer(verticeInfo[nowVertice]);
+ 75             tallyQueue.offer(nowVertice);               //将当前孤立部分一个顶点加入记录队列中
+ 76             while(!tallyQueue.isEmpty()){                           //只要队列不为空
+ 77                 nowVertice = tallyQueue.poll();                     //取出队首的节点
+ 78                 for(int a = 0; a < verticeNum; a++){     //遍历所有和nowVertice相邻的节点
+ 79                     if((racs[nowVertice][a] != Integer.MAX_VALUE) && visitedCount[a] == 0) {                      //没有访问过
+ 80                         visitedCount[a] = 1;                        //记为标记过
+ 81                         tallyQueue.offer(a);                        //加入队列,上面会继续取出.来遍历
+ 82                         edges.offer(verticeInfo[a]);                      //记录
+ 83                     }
+ 84                 }
+ 85             }
+ 86         }
+ 87         return edges;
+ 88     }
+ 89 
+ 90     /**
+ 91      * 寻找没有被访问过的顶点.
+ 92      * @return > 0 即为还未被访问过的顶点.   -1 说明所有的节点都被访问过了.
+ 93      */
+ 94     private int findNotVisited(){
+ 95         for(int i = 0; i < verticeNum; i ++){
+ 96             if(visitedCount[i] == 0){
+ 97                 return i;
+ 98             }
+ 99         }
+100         return -1;
+101     }
+102 
+103     /**
+104      * 将记录访问的数组初始化为0
+105      */
+106     private void initVisitedCount(){
+107         for(int i = 0; i < visitedCount.length; i ++){
+108             visitedCount[i] = 0;
+109         }
+110     }
+111 }
+
+ 
+
+ 
+
+ 
+
+ 
+
+下面测试类:
+
+
+package com.henvealf.datastructures.graph.arcs;
+
+import java.util.Queue;
+
+/**
+ * 图的测试类
+ * Created by Henvealf on 16-5-22.
+ */
+public class Main {
+
+    public static void main(String[] args) {
+
+        int[][] racs = new int[][]{
+                {0,1,0,1,0,},
+                {1,0,1,0,1,},
+                {0,1,0,1,1,},
+                {1,0,1,0,0,},
+                {0,1,1,0,0,},
+        };
+        int oo = Integer.MAX_VALUE;
+        int[][] racs1 = new int[][]{
+                {oo, 1, 1,oo,oo,oo,oo,oo},
+                { 1,oo,oo, 1,oo,oo,oo,oo},
+                { 1,oo,oo, 1, 1,oo,oo,oo},
+                {oo, 1, 1,oo,oo, 1, 1,oo},
+                {oo,oo, 1,oo,oo,oo,oo, 1},
+                {oo,oo,oo, 1,oo,oo, 1,oo},
+                {oo,oo,oo, 1,oo, 1,oo,oo},
+                {oo,oo,oo,oo, 1,oo,oo,oo},
+        };
+
+        String[] verticeInfos1 = new String[] {
+                "V0","V1","V2","V3","V4","V5","V6","V7"
+        };
+        Graph<String> graph = new Graph<>(racs2,verticeInfos2);
+        Queue<String> dr = graph.depthFirstSearch();
+        Queue<String> br = graph.breadthFirstSearch();
+
+        System.out.println("--遍历");
+        System.out.println("----深度优先结果: " + dr);
+        System.out.println("----广度优先结果: " + br);
+}
+
+<br>引用自CSDN：https://www.cnblogs.com/onepixel/articles/7674659.html

@@ -1,0 +1,209 @@
+### 1.Dijkstra 算法
+　　首先来看一下 Dijkstra 算法,它不能够处理权值为负的图.本算法的主要步骤:
+
+　　
+
+　　1.找出距离起始顶点距离最短的顶点,这里设为顶点nowVertice.
+
+　　2.遍历所有与顶点nowVertice相邻的顶点nextVertice.如果发现选择nowVertice到达nextVertice的路径后,nextVertice距离起始顶点的距离比当前的距离小.便更新新的距离.如下:
+
+    if(currDist[nextVertice] > currDist[nowVertice] + weight) {　　　　　　　　　　　　//weight为从nowVertice到nextVertice说需要的权重
+                    currDist[nextVertice] = currDist[nowVertice] + weight;
+     }
+　　　　currDist是一个全局数组,currDist[i]意思就是当前起始顶点到顶点i的距离.
+
+　　3.将nowVertice从图中删除.
+
+　　4.重复步骤1,直到所有的顶点都被删除完.
+
+ 
+
+　　补充,在实现的时候,上面说的删除并不是真的直接从图中把某一顶点删除,这里会使用一个集合来存储所有的顶点,对该集合中的顶点进行删除动作,集合如下.
+
+List<Integer> toBeChecked = new LinkedList<>();
+　　
+
+　　和上一篇一样,这里使用一个名为Graph的类来封装查找最短路径的相关内容:
+
+
+/**
+ * 使用邻接矩阵实现图<p>
+ * 深度优先遍历与广度优先遍历<p>
+ * 求最短路径:<p>
+ *      1. Dijkstra 算法 <p>
+ *      2. Ford 算法 <p>
+ *      3. 通用型的纠正标记算法<p>
+ * Created by Henvealf on 16-5-22.
+ */
+public class Graph<T> {
+    private int[][] racs;       //邻接矩阵
+    private T[] verticeInfo;   //各个点所携带的信息.
+
+    private int verticeNum;             //顶点的数目,
+    private int[] visitedCount;         //记录访问
+    private int[] currDist;             //最短路径算法中用来记录每个顶点距离起始顶点路径的长度.
+
+    public Graph(int[][] racs, T[] verticeInfo){
+        if(racs.length != racs[0].length){
+            throw new IllegalArgumentException("racs is not a adjacency matrix!");
+        }
+        if(racs.length != verticeInfo.length ){
+            throw new IllegalArgumentException ("Argument of 2 verticeInfo's length is error!");
+        }
+        this.racs = racs;
+        this.verticeInfo = verticeInfo;
+        verticeNum = racs.length;
+        visitedCount = new int[verticeNum];
+    }
+    //..........       
+}
+
+ 　　这里是使用的邻接矩阵来表示图,想要使用其他表示方法,自行稍微修改一下便可.下面是实现方法的代码:
+
+
+ 1 /**
+ 2      * 使用 Dijkstra算法寻找最短路径
+ 3      * @param first 路径开始的顶点
+ 4      * @return 返回最后的最短路径
+ 5      */
+ 6     public int[] dijkstraAlgorithm(int first){
+ 7         if(first < 0 || first >= verticeNum ){
+ 8             throw new IndexOutOfBoundsException ("should between 0 ~ " + (verticeNum -1));
+ 9         }
+10         setNumberAsInfinitie();
+11         currDist[first] = 0;
+12         List<Integer> toBeChecked = new LinkedList<>();
+13         for(int i = 0; i < verticeNum; i ++){
+14             toBeChecked.add(i);
+15         }
+16         while(!toBeChecked.isEmpty()){
+17             int nowVertice = findMinCurrDistVerticeAndRemoveFormList(toBeChecked);
+18             for(int i = 0; i < verticeNum; i ++){
+19                 int nextVertice = -1;                       //邻接节点
+20                 int weight = Integer.MAX_VALUE;             //到达邻接节点的权重
+21                 if(racs[nowVertice][i] != Integer.MAX_VALUE){   //得到邻接顶点
+22                     if(toBeChecked.contains(i)){
+23                         nextVertice = i;
+24                         weight = racs[nowVertice][i];
+25                     }
+26                 }
+27                 if(nextVertice == -1) {continue;}
+28                 if(currDist[nextVertice] > currDist[nowVertice] + weight){
+29                     currDist[nextVertice] = currDist[nowVertice] + weight;
+30                 }
+31             }
+32 
+33         }
+34         for(int i = 0; i < currDist.length; i++){
+35             System.out.println("现在顶点 " + verticeInfo[i].toString() + " 距离顶点 " + verticeInfo[first].toString()  + " 的最短距离为 " + currDist[i]);
+36         }
+37         return currDist;
+38     }
+39 　　/**
+40      * 将currDist数组初始化为无穷大
+41      */
+42     private void setNumberAsInfinitie(){
+43         currDist = new int[verticeNum];
+44         for (int i = 0; i < verticeNum; i++){
+45             currDist[i] = Integer.MAX_VALUE;
+46         }
+47     }
+48 
+49     /**
+50      * 寻找出当前距离起始顶点路径最短的顶点,并将其从toBeCheck中删除
+51      * @param list
+52      * @return
+53      */
+54     private int findMinCurrDistVerticeAndRemoveFormList(List<Integer> list){
+55         int num = list.get(0);
+56         int dist = currDist[list.get(0)];
+57         int listIndex = 0;
+58         for(int i = 1; i < list.size(); i ++){
+59             int index = list.get(i);
+60             if(currDist[index] < dist) {
+61                 dist = currDist[index];
+62                 num = index;
+63                 listIndex = i;
+64             }
+65         }
+66         list.remove(listIndex);
+67         return num;
+68     }
+
+ 
+
+2.Ford 算法 
+　　上面提到Dijkstra算法不能处理有负权值的情况,所以自然就有替代方法:Ford方法.
+
+　　Ford算法并不会像Dijkstra算法一样去删除顶点,他时按照一定的顺序,来对每个边进行遍历并更新设置最短距离.
+
+　　比如有一个异常简单的图:
+
+　　　　a-->b-->c-->d
+
+　　Ford算法要求我们指定边的遍历顺序,让每条边都能够被走过一次.比如这里我选择的顺序为:b-->c,  a-->b, c-->d.
+
+　　算法就会根据指定的该顺序,把图中所有的边都访问一次,每访问完一遍就是一次迭代.在访问过程中,和Dijkstra算法相似,回进行如下判断和更新.
+
+if(currDist[now] > currDist[next] + weight){
+         currDist[next] = currDist[now] + racs[now][next];
+}
+ 
+
+　　然后直到在最后一次迭代中,发现所有的边都不符合上面的判断,算法就结束.
+
+　　实现代码如下:
+
+
+ 1 /**
+ 2      * 使用Ford的方法寻找最短路径
+ 3      * @param first 路径开始的顶点
+ 4      */
+ 5     public int[] fordAlgorithm(int first){
+ 6         if(first < 0 || first >= verticeNum ){
+ 7             throw new IndexOutOfBoundsException ("should between 0 ~ " + (verticeNum -1));
+ 8         }
+ 9         setNumberAsInfinitie();
+10         currDist[first] = 0;
+11         while(true){
+12             boolean hasLessEdge = false;            //是否有使currDist更小的边
+13             for(int s = 0 ; s < verticeNum; s ++){
+14                 for (int e = 0; e < verticeNum; e ++){
+15                     if(racs[s][e] != Integer.MAX_VALUE){
+16                         int weight = getWeightPreventOverflow(s,e);
+17                         if(currDist[e] > currDist[s] + weight){
+18                             hasLessEdge = true;
+19                             currDist[e] = currDist[s] + racs[s][e];
+20                         }
+21                     }
+22                 }
+23             }
+24             if(!hasLessEdge) { break; }
+25         }
+26         for(int i = 0; i < currDist.length; i++){
+27             System.out.println("现在顶点 " + verticeInfo[i].toString() + " 距离顶点 " + verticeInfo[first].toString()  + " 的最短距离为 " + currDist[i]);
+28         }
+29 
+30         return currDist;
+31     }
+32 
+33     /**
+34      * 处理并获得权重,并且使得到的结果在进行路径长度的加减操作时不会出现溢出
+35      * @param start
+36      * @param end
+37      * @return
+38      */
+39     private int getWeightPreventOverflow(int start, int end){
+40         int weight = 0;
+41         //防止加减法溢出
+42         if(currDist[start] == Integer.MAX_VALUE && racs[start][end] > 0){
+43             weight = 0;
+44         }else if(currDist[start] == Integer.MIN_VALUE && racs[start][end] < 0){
+45             weight = 0;
+46         }else{
+47             weight = racs[start][end];
+48         }
+49         return weight;
+50     }
+
+<br> 引用自：http://www.cnblogs.com/Henvealf/p/5574455.html

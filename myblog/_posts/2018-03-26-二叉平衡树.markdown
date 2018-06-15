@@ -1,0 +1,428 @@
+### 二叉平衡树
+平衡二叉树（Balanced Binary Tree）又被称为AVL树（有别于AVL算法），且具有以下性质：它是一 棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树。这个方案很好的解决了二叉查找树退化成链表的问题，把插入，查找，删除的时间复杂度最好情况和最坏情况都维持在O(logN)。但是频繁旋转会使插入和删除牺牲掉O(logN)左右的时间，不过相对二叉查找树来说，时间上稳定了很多。
+
+
+
+平衡二叉树大部分操作和二叉查找树类似，主要不同在于插入删除的时候平衡二叉树的平衡可能被改变，并且只有从那些插入点到根结点的路径上的结点的平衡性可能被改变，因为只有这些结点的子树可能变化。
+
+ 
+
+平衡二叉树不平衡的情形：
+
+把需要重新平衡的结点叫做α，由于任意两个结点最多只有两个儿子，因此高度不平衡时，α结点的两颗子树的高度相差2.容易看出，这种不平衡可能出现在下面4中情况中：
+
+1.对α的左儿子的左子树进行一次插入
+
+2.对α的左儿子的右子树进行一次插入
+
+3.对α的右儿子的左子树进行一次插入
+
+4.对α的右儿子的右子树进行一次插入
+
+
+
+情形1和情形4是关于α的镜像对称，二情形2和情形3也是关于α的镜像对称，因此理论上看只有两种情况，但编程的角度看还是四种情形。
+
+第一种情况是插入发生在“外边”的情形（左左或右右），该情况可以通过一次单旋转完成调整；第二种情况是插入发生在“内部”的情形（左右或右左），这种情况比较复杂，需要通过双旋转来调整。
+
+ 
+
+### 调整措施：
+
+### 一、单旋转
+
+
+
+ 
+
+上图是左左的情况，k2结点不满足平衡性，它的左子树k1比右子树z深两层，k1子树中更深的是k1的左子树x，因此属于左左情况。
+
+为了恢复平衡，我们把x上移一层，并把z下移一层，但此时实际已经超出了AVL树的性质要求。为此，重新安排结点以形成一颗等价的树。为使树恢复平衡，我们把k2变成这棵树的根节点，因为k2大于k1，把k2置于k1的右子树上，而原本在k1右子树的Y大于k1，小于k2，就把Y置于k2的左子树上，这样既满足了二叉查找树的性质，又满足了平衡二叉树的性质。
+
+这种情况称为单旋转。
+
+ 
+
+### 二、双旋转
+
+对于左右和右左两种情况，单旋转不能解决问题，要经过两次旋转。
+
+
+
+对于上图情况，为使树恢复平衡，我们需要进行两步，第一步，把k1作为根，进行一次右右旋转，旋转之后就变成了左左情况，所以第二步再进行一次左左旋转，最后得到了一棵以k2为根的平衡二叉树。
+
+ 
+
+AVL树的删除操作：
+
+同插入操作一样，删除结点时也有可能破坏平衡性，这就要求我们删除的时候要进行平衡性调整。
+
+删除分为以下几种情况：
+
+首先在整个二叉树中搜索要删除的结点，如果没搜索到直接返回不作处理，否则执行以下操作：
+
+### 1.要删除的节点是当前根节点T。
+
+如果左右子树都非空。在高度较大的子树中实施删除操作。
+
+分两种情况：
+
+(1)、左子树高度大于右子树高度，将左子树中最大的那个元素赋给当前根节点，然后删除左子树中元素值最大的那个节点。
+
+(1)、左子树高度小于右子树高度，将右子树中最小的那个元素赋给当前根节点，然后删除右子树中元素值最小的那个节点。
+
+如果左右子树中有一个为空，那么直接用那个非空子树或者是NULL替换当前根节点即可。
+
+### 2、要删除的节点元素值小于当前根节点T值，在左子树中进行删除。
+
+递归调用，在左子树中实施删除。
+
+这个是需要判断当前根节点是否仍然满足平衡条件，
+
+如果满足平衡条件，只需要更新当前根节点T的高度信息。
+
+否则，需要进行旋转调整：
+
+如果T的左子节点的左子树的高度大于T的左子节点的右子树的高度，进行相应的单旋转。否则进行双旋转。
+
+### 3、要删除的节点元素值大于当前根节点T值，在右子树中进行删除。
+
+ 
+
+ 
+
+### 下面给出详细代码实现：
+
+ 
+
+AvlTree.h
+
+
+  1 #include <iostream>
+  2 #include <algorithm>
+  3 using namespace std;
+  4 #pragma once
+  5 
+  6 //平衡二叉树结点
+  7 template <typename T>
+  8 struct AvlNode
+  9 {
+ 10     T data;
+ 11     int height; //结点所在高度
+ 12     AvlNode<T> *left;
+ 13     AvlNode<T> *right;
+ 14     AvlNode<T>(const T theData) : data(theData), left(NULL), right(NULL), height(0){}
+ 15 };
+ 16 
+ 17 //AvlTree
+ 18 template <typename T>
+ 19 class AvlTree
+ 20 {
+ 21 public:
+ 22     AvlTree<T>(){}
+ 23     ~AvlTree<T>(){}
+ 24     AvlNode<T> *root;
+ 25     //插入结点
+ 26     void Insert(AvlNode<T> *&t, T x);
+ 27     //删除结点
+ 28     bool Delete(AvlNode<T> *&t, T x);
+ 29     //查找是否存在给定值的结点
+ 30     bool Contains(AvlNode<T> *t, const T x) const;
+ 31     //中序遍历
+ 32     void InorderTraversal(AvlNode<T> *t);
+ 33     //前序遍历
+ 34     void PreorderTraversal(AvlNode<T> *t);
+ 35     //最小值结点
+ 36     AvlNode<T> *FindMin(AvlNode<T> *t) const;
+ 37     //最大值结点
+ 38     AvlNode<T> *FindMax(AvlNode<T> *t) const;
+ 39 private:
+ 40     //求树的高度
+ 41     int GetHeight(AvlNode<T> *t);
+ 42     //单旋转 左
+ 43     AvlNode<T> *LL(AvlNode<T> *t);
+ 44     //单旋转 右
+ 45     AvlNode<T> *RR(AvlNode<T> *t);
+ 46     //双旋转 右左
+ 47     AvlNode<T> *LR(AvlNode<T> *t);
+ 48     //双旋转 左右
+ 49     AvlNode<T> *RL(AvlNode<T> *t);
+ 50 };
+ 51 
+ 52 template <typename T>
+ 53 AvlNode<T> * AvlTree<T>::FindMax(AvlNode<T> *t) const
+ 54 {
+ 55     if (t == NULL)
+ 56         return NULL;
+ 57     if (t->right == NULL)
+ 58         return t;
+ 59     return FindMax(t->right);
+ 60 }
+ 61 
+ 62 template <typename T>
+ 63 AvlNode<T> * AvlTree<T>::FindMin(AvlNode<T> *t) const
+ 64 {
+ 65     if (t == NULL)
+ 66         return NULL;
+ 67     if (t->left == NULL)
+ 68         return t;
+ 69     return FindMin(t->left);
+ 70 }
+ 71 
+ 72 
+ 73 template <typename T>
+ 74 int AvlTree<T>::GetHeight(AvlNode<T> *t)
+ 75 {
+ 76     if (t == NULL)
+ 77         return -1;
+ 78     else
+ 79         return t->height;
+ 80 }
+ 81 
+ 82 
+ 83 //单旋转
+ 84 //左左插入导致的不平衡
+ 85 template <typename T>
+ 86 AvlNode<T> * AvlTree<T>::LL(AvlNode<T> *t)
+ 87 {
+ 88     AvlNode<T> *q = t->left;
+ 89     t->left = q->right;
+ 90     q->right = t;
+ 91     t = q;
+ 92     t->height = max(GetHeight(t->left), GetHeight(t->right)) + 1;
+ 93     q->height = max(GetHeight(q->left), GetHeight(q->right)) + 1;
+ 94     return q;
+ 95 }
+ 96 
+ 97 //单旋转
+ 98 //右右插入导致的不平衡
+ 99 template <typename T>
+100 AvlNode<T> * AvlTree<T>::RR(AvlNode<T> *t)
+101 {
+102     AvlNode<T> *q = t->right;
+103     t->right = q->left;
+104     q->left = t;
+105     t = q;
+106     t->height = max(GetHeight(t->left), GetHeight(t->right)) + 1;
+107     q->height = max(GetHeight(q->left), GetHeight(q->right)) + 1;
+108     return q;
+109 }
+110 
+111 //双旋转 
+112 //插入点位于t的左儿子的右子树
+113 template <typename T>
+114 AvlNode<T> * AvlTree<T>::LR(AvlNode<T> *t)
+115 {
+116     //双旋转可以通过两次单旋转实现
+117     //对t的左结点进行RR旋转，再对根节点进行LL旋转
+118     RR(t->left);
+119     return LL(t);
+120 }
+121 
+122 //双旋转
+123 //插入点位于t的右儿子的左子树
+124 template <typename T>
+125 AvlNode<T> * AvlTree<T>::RL(AvlNode<T> *t)
+126 {
+127     LL(t->right);
+128     return RR(t);
+129 }
+130 
+131 
+132 template <typename T>
+133 void AvlTree<T>::Insert(AvlNode<T> *&t, T x)
+134 {
+135     if (t == NULL)
+136         t = new AvlNode<T>(x);
+137     else if (x < t->data)
+138     {
+139         Insert(t->left, x);
+140         //判断平衡情况
+141         if (GetHeight(t->left) - GetHeight(t->right) > 1)
+142         {
+143             //分两种情况 左左或左右
+144 
+145             if (x < t->left->data)//左左
+146                 t = LL(t);
+147             else                  //左右
+148                 t = LR(t);
+149         }
+150     }
+151     else if (x > t->data)
+152     {
+153         Insert(t->right, x);
+154         if (GetHeight(t->right) - GetHeight(t->left) > 1)
+155         {
+156             if (x > t->right->data)
+157                 t = RR(t);
+158             else
+159                 t = RL(t);
+160         }
+161     }
+162     else
+163         ;//数据重复
+164     t->height = max(GetHeight(t->left), GetHeight(t->right)) + 1;
+165 }
+166 
+167 template <typename T>
+168 bool AvlTree<T>::Delete(AvlNode<T> *&t, T x)
+169 {
+170     //t为空 未找到要删除的结点
+171     if (t == NULL)
+172         return false;
+173     //找到了要删除的结点
+174     else if (t->data == x)
+175     {
+176         //左右子树都非空
+177         if (t->left != NULL && t->right != NULL)
+178         {//在高度更大的那个子树上进行删除操作
+179 
+180             //左子树高度大，删除左子树中值最大的结点，将其赋给根结点
+181             if (GetHeight(t->left) > GetHeight(t->right))
+182             {
+183                 t->data = FindMax(t->left)->data;
+184                 Delete(t->left, t->data);
+185             }
+186             else//右子树高度更大，删除右子树中值最小的结点，将其赋给根结点
+187             {
+188                 t->data = FindMin(t->right)->data;
+189                 Delete(t->right, t->data);
+190             }
+191         }
+192         else
+193         {//左右子树有一个不为空，直接用需要删除的结点的子结点替换即可
+194             AvlNode<T> *old = t;
+195             t = t->left ? t->left: t->right;//t赋值为不空的子结点
+196             delete old;
+197         }
+198     }
+199     else if (x < t->data)//要删除的结点在左子树上
+200     {
+201         //递归删除左子树上的结点
+202         Delete(t->left, x);
+203         //判断是否仍然满足平衡条件
+204         if (GetHeight(t->right) - GetHeight(t->left) > 1)
+205         {
+206             if (GetHeight(t->right->left) > GetHeight(t->right->right))
+207             {
+208                 //RL双旋转
+209                 t = RL(t);
+210             }
+211             else
+212             {//RR单旋转
+213                 t = RR(t);
+214             }
+215         }
+216         else//满足平衡条件 调整高度信息
+217         {
+218             t->height = max(GetHeight(t->left), GetHeight(t->right)) + 1;
+219         }
+220     }
+221     else//要删除的结点在右子树上
+222     {
+223         //递归删除右子树结点
+224         Delete(t->right, x);
+225         //判断平衡情况
+226         if (GetHeight(t->left) - GetHeight(t->right) > 1)
+227         {
+228             if (GetHeight(t->left->right) > GetHeight(t->left->left))
+229             {
+230                 //LR双旋转
+231                 t = LR(t);
+232             }
+233             else
+234             {
+235                 //LL单旋转
+236                 t = LL(t);
+237             }
+238         }
+239         else//满足平衡性 调整高度
+240         {
+241             t->height = max(GetHeight(t->left), GetHeight(t->right)) + 1;
+242         }
+243     }
+244     
+245     return true;
+246 }
+247 
+248 //查找结点
+249 template <typename T>
+250 bool AvlTree<T>::Contains(AvlNode<T> *t, const T x) const
+251 {
+252     if (t == NULL)
+253         return false;
+254     if (x < t->data)
+255         return Contains(t->left, x);
+256     else if (x > t->data)
+257         return Contains(t->right, x);
+258     else
+259         return true;
+260 }
+261 
+262 //中序遍历
+263 template <typename T>
+264 void AvlTree<T>::InorderTraversal(AvlNode<T> *t)
+265 {
+266     if (t)
+267     {
+268         InorderTraversal(t->left);
+269         cout << t->data << ' ';
+270         InorderTraversal(t->right);
+271     }
+272 }
+273 
+274 //前序遍历
+275 template <typename T>
+276 void AvlTree<T>::PreorderTraversal(AvlNode<T> *t)
+277 {
+278     if (t)
+279     {
+280         cout << t->data << ' ';
+281         PreorderTraversal(t->left);
+282         PreorderTraversal(t->right);
+283     }
+284 }
+
+ 
+
+main.cpp
+
+
+ 1 #include "AvlTree.h"
+ 2 
+ 3 int main()
+ 4 {
+ 5     AvlTree<int> tree;
+ 6     int value;
+ 7     int tmp;
+ 8     cout << "请输入整数建立二叉树(-1结束)：" << endl;
+ 9     while (cin >> value)
+10     {
+11         if (value == -1)
+12             break;
+13         tree.Insert(tree.root,value);
+14     }
+15     cout << "中序遍历";
+16     tree.InorderTraversal(tree.root);
+17     cout << "\n前序遍历:";
+18     tree.PreorderTraversal(tree.root);
+19     cout << "\n请输入要查找的结点：";
+20     cin >> tmp;
+21     if (tree.Contains(tree.root, tmp))
+22         cout << "已查找到" << endl;
+23     else
+24         cout << "值为" << tmp << "的结点不存在" << endl;
+25     cout << "请输入要删除的结点：";
+26     cin >> tmp;
+27     tree.Delete(tree.root, tmp);
+28     cout << "删除后的中序遍历：";
+29     tree.InorderTraversal(tree.root);
+30     cout << "\n删除后的前序遍历：";
+31     tree.PreorderTraversal(tree.root);
+32 }
+
+ 
+
+测试结果：
+<br>引用自CSDN：https://www.cnblogs.com/zhangbaochong/p/5164994.html
+

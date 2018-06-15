@@ -1,3 +1,9 @@
+---
+layout: post
+title: 图的最短路问题
+date: 2018-04-06 
+tags: 数据结构   
+---
 ### 1.Dijkstra 算法
 　　首先来看一下 Dijkstra 算法,它不能够处理权值为负的图.本算法的主要步骤:
 

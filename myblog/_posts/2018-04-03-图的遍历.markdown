@@ -1,3 +1,9 @@
+---
+layout: post
+title: 十种排序算法
+date: 2018-02-26 
+tags: 数据结构   
+---
 ### 概念　
 　　简单图(simple graph):就是由一些顶点(V,vertice) 和 连接这些顶点的一些边(E,edge)所组成的结构,并且每对顶点之间只能存在一条边.所以通常会用G = (V,E)来表示一个简单图.简单图也被称为无向图(undirected graph).
 

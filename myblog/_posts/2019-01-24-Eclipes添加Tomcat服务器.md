@@ -13,7 +13,7 @@ tags: 环境变量搭建
 
 
 
-![](https://ws3.sinaimg.cn/large/005BYqpgly1g25qqsgwo3j30jy0gd0us.jpg)
+![](https://ws3.sinaimg.cn/large/005BYqpgly1g25qxwclb9j30jy0gdmz3.jpg)
 
 
 
@@ -23,15 +23,13 @@ tags: 环境变量搭建
 
 
 
-![1555485345315](images\1555485345315.png)
+![](https://ws3.sinaimg.cn/large/005BYqpgly1g25qybhiznj30jy0gd0us.jpg)
 
 
 
 **3.去 Tomcat 官网去选择自己想要的版本（一般7.0以上就可以凑合着用）**
 
-
-
-![1555485532160](images\1555485532160.png)
+![](https://ws3.sinaimg.cn/large/005BYqpgly1g25qyp8f10j30h10gtwga.jpg)
 
 
 
@@ -39,6 +37,8 @@ tags: 环境变量搭建
 
 
 
-![1555485730535](images\1555485730535.png)
 
-![1555485869368](images\1555485869368.png)
+
+![](https://ws3.sinaimg.cn/large/005BYqpgly1g25qz2coknj30h10gtjsy.jpg)
+
+![](https://ws3.sinaimg.cn/large/005BYqpgly1g25qz8wjdkj30h10gtabi.jpg)

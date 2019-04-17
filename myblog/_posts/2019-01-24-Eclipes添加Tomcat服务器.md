@@ -13,7 +13,7 @@ tags: 环境变量搭建
 
 
 
-![1555485178327](C:\Users\Administrator.USER-20181229AT\AppData\Roaming\Typora\typora-user-images\1555485178327.png)
+![1555485178327](images\1555485178327.png)
 
 
 
@@ -23,7 +23,7 @@ tags: 环境变量搭建
 
 
 
-![1555485345315](C:\Users\Administrator.USER-20181229AT\AppData\Roaming\Typora\typora-user-images\1555485345315.png)
+![1555485345315](images\1555485345315.png)
 
 
 
@@ -31,7 +31,7 @@ tags: 环境变量搭建
 
 
 
-![1555485532160](C:\Users\Administrator.USER-20181229AT\AppData\Roaming\Typora\typora-user-images\1555485532160.png)
+![1555485532160](images\1555485532160.png)
 
 
 
@@ -39,6 +39,6 @@ tags: 环境变量搭建
 
 
 
-![1555485730535](C:\Users\Administrator.USER-20181229AT\AppData\Roaming\Typora\typora-user-images\1555485730535.png)
+![1555485730535](images\1555485730535.png)
 
-![1555485869368](C:\Users\Administrator.USER-20181229AT\AppData\Roaming\Typora\typora-user-images\1555485869368.png)
+![1555485869368](images\1555485869368.png)

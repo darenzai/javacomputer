@@ -13,7 +13,7 @@ tags: 环境变量搭建
 
 
 
-![1555485178327](images\1555485178327.png)
+![](https://ws3.sinaimg.cn/large/005BYqpgly1g25qqsgwo3j30jy0gd0us.jpg)
 
 
 

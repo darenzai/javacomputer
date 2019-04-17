@@ -9,16 +9,6 @@ tags: 环境变量搭建
 
  
 
-
-
-
-
-
-
-
-
-
-
 **1.点击eclipse菜单的Windows菜单-->Preferences**
 
 
